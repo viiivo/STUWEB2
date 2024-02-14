@@ -25,7 +25,8 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-
+    let myColour = "black";
+    
     const socket = io();
     // received a colour
     socket.on("colour", (colour) => {
