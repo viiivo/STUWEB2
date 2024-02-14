@@ -42,6 +42,8 @@ io.on('connection', (socket) => {
         current_x += dimensions.width;
         // TODO handle the case when the client window is resized
     });
+
+    // TODO handle cases when the client disconnects
 });
 
 
