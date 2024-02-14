@@ -29,7 +29,6 @@ app.use(express.static('public'));
 // a client has connected
 io.on('connection', (socket) => {
     console.log('a user connected');
-    // assign a colour to the client and send it
 
     // forward the draw message to all clients except the sender
     socket.on('ripple', (msg) => {
