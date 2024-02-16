@@ -10,6 +10,7 @@
             height: 100%;
             width: 100%;
             margin: 0px;
+            touch-action: none; /* disable touch events on the browser itself. We use the touch events for drawing */
         }
 
         canvas {
@@ -55,17 +56,22 @@
 
     let painting = false;
     function startDraw(e) {
+        console.log("start drawing");
         painting = true;
         last_mouse.x = e.clientX;
         last_mouse.y = e.clientY;
     }
 
     function endDraw() {
+        console.log("end drawing");
         painting = false;
     }
 
     function draw(e) {
+        console.log("drawing");
         if (painting) {
+            console.log("drawing inside if statement");
+            console.log(e);
             socket.emit("draw", {
                 from: { x: last_mouse.x, y: last_mouse.y },
                 to: { x: e.clientX, y: e.clientY },
@@ -87,9 +93,9 @@
     }
 
 
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mouseup', endDraw);
-    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('pointerdown', startDraw);
+    canvas.addEventListener('pointerup', endDraw);
+    canvas.addEventListener('pointermove', draw);
 
 
 
