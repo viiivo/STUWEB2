@@ -32,9 +32,32 @@ io.on('connection', (socket) => {
     // forward the message to all clients except the sender
     socket.on('client_msg', (msg) => {
         socket.broadcast.emit('client_msg', msg);
-    })
-});
+    });
 
+    // handle click event from client GROW
+    socket.on('click_event', () => {
+
+        socket.emit('server_click_event_grow', "Growth command rec");
+        socket.broadcast.emit('server_click_event_shrinke', "Shrinke command rec");
+
+        // emit message to all clients except the sender
+        //socket.broadcast.emit('server_click_event_grow', "Growth command rec");
+    });
+      // send a welcome message to the client SHRINKE
+      socket.on('click_event2', () => {
+        
+    // Send a message to the sender only
+    socket.emit('server_click_event_shrinke', "Shrinke command rec");
+    socket.broadcast.emit('server_click_event_grow', "Growth command rec");
+    });
+
+    socket.on('click_event3', () => {
+        
+        // Send a message to everyone
+        io.emit('server_click_event_even', "Even command rec");
+        });
+    
+});
 
 // start the webserver
 let port = process.env.PORT || 8080;        // set our port

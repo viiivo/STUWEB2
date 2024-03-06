@@ -1,33 +1,123 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Basic Socket template</title>
+    <title>Socket.io Example</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="libs/shake.js"></script>
     <style>
+        #rectangle {
+            width: 100%;
+            height: 50vh;
+            background-color: blue;
+            transition: height 0.5s; /* Only apply transition to height property */
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+            animation: waterFlow 2s infinite alternate;
+        }
+        @keyframes waterFlow {
+    0% { transform: translateY(-3); }
+    100% { transform: translateY(15px); }}
+
     </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Connect to socket.io server
+        const socket = io();
+
+        // Send message to server when rectangle is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const rectangle = document.getElementById('rectangle');
+            rectangle.addEventListener('click', function() {
+                // Emit a click event to the server when the rectangle is clicked
+                socket.emit('click_event');
+            });
+            //console.log("recieved shrinky baby")
+        });
+
+        // Receive messages from server
+        socket.on('msg', function(msg) {
+            console.log('Received message from server:', msg);
+        });
+
+        socket.on('client_msg', function(msg) {
+            console.log('Received message from another client:', msg);
+        });
+
+        socket.on('server_click_event_grow', function(msg) {
+            console.log('Received click event from server:', msg);
+            // Grow the rectangle when click event is received from the server
+            growRectangle();
+        });
+
+        socket.on('server_click_event_shrinke', function(msg) {
+            console.log('Received click event from server:', msg);
+            // Shrink the rectangle when click event is received from the server
+            shrinkRectangle();
+        });
+
+        socket.on('server_click_event_even', function(msg) {
+            console.log('Received even click event from server:', msg);
+            // Shrink the rectangle when click event is received from the server
+            evenRectangle();
+        });
+
+        function growRectangle() {
+            console.log("Growing");
+            const rectangle = document.getElementById('rectangle');
+            console.log("Current height:", rectangle.style.height);
+            // Increase height by 50 pixels
+            rectangle.style.height = (parseInt(rectangle.style.height || 50) + 50) + 'vh';
+            console.log("New height:", rectangle.style.height);
+
+             // Überprüfen, ob das Rechteck die volle Bildschirmhöhe erreicht hat (100 VH)
+    if (parseInt(rectangle.style.height) >= 100) {
+        rectangle.style.height = '100vh'; // Setzen Sie die Höhe auf 100 VH
+    }
+        }
+
+        function shrinkRectangle() {
+            console.log("Shrinking");
+            const rectangle = document.getElementById('rectangle');
+            console.log("Current height:", rectangle.style.height);
+            // Decrease height by 50 pixels
+            rectangle.style.height = (parseInt(rectangle.style.height || 50) - 50) + 'vh';
+            console.log("New height:", rectangle.style.height);
+        }
+
+        function evenRectangle() {
+            console.log("evening");
+            const rectangle = document.getElementById('rectangle');
+            console.log("Current height:", rectangle.style.height);
+            // Decrease height by 50 pixels
+            rectangle.style.height = '50vh';
+            console.log("New height:", rectangle.style.height);
+        }
+
+        // Listen for orientation change events
+        window.addEventListener('deviceorientation', handleOrientation);
+
+        function handleOrientation(event) {
+            // Check if beta is more than 30.0
+            if (event.beta >= 30.0) {
+                // Emit a click event to the server
+                socket.emit('click_event');
+            }
+
+              // Check if beta is less than 30.0
+              if (event.beta <= -30.0) {
+                // Emit a click event to the server
+                socket.emit('click_event2');
+            }
+
+            // Check if beta is 0
+    if (event.beta === 0) {
+        // Set the height of the rectangle back to 50vh
+        socket.emit('click_event3');
+    }
+        }
+    </script>
 </head>
-
 <body>
+    <div id="rectangle"></div>
+    <script src="client.js"></script>
 </body>
-<script src="/socket.io/socket.io.js"></script>
-<script>
- 
-    const socket = io();
-    // received a message from the server
-    socket.on("msg", msg => {
-        console.log(msg);
-    });
-
-    // received a message from another client
-    socket.on("client_msg", msg => {
-        console.log(msg);
-    });
-
-    socket.on("connect", () => {
-        socket.emit("client_msg", "Hello from the client " + socket.id);
-    });
-
-</script>
-
 </html>

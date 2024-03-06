@@ -2,4 +2,5 @@ canvas_example/node_modules/
 ripple_example/node_modules/
 socket_template/node_modules/
 ripple/
-
+ripple_example
+socket_template
